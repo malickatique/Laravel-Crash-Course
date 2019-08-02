@@ -1,7 +1,7 @@
 ## Composer Commands
 
 * Show all commands:
-    php artisan
+    - php artisan
 
 * Create Laravel Project:
     composer create-project --prefer-dist laravel/laravel projectName
