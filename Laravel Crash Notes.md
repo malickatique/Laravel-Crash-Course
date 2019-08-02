@@ -79,8 +79,7 @@
         //params
     })->name('profile');
 
-    How to use it:
-    ```php
+    // How to use it
     // Generating URLs...
     $url = route('profile', ['id' => 1]);
 
@@ -215,8 +214,9 @@
         }
     }
         
-    Middleware parameters may be specified when defining the route by separating the middleware name and parameters with a :. Multiple parameters should be delimited by commas.
-    ```php
+    //Middleware parameters may be specified when defining the route by separating the middleware 
+    //name and parameters with a :Multiple parameters should be delimited by commas.
+    
     Route::put('post/{id}', function ($id) {
         //
     })->middleware('role:editor'); 
@@ -227,29 +227,36 @@
 * To disable it just comment this middleware in 'web' middlewares group.
     OR
 * You may also exclude the routes by adding their URIs to the $except 
-  property of the VerifyCsrfToken middleware.
-        ```php
+  property of the VerifyCsrfToken middleware:
+    ```php
         protected $except = [
             'stripe/*',
             'http://example.com/foo/bar',
             'http://example.com/foo/*',
         ];
-
-* Jusy add @csrf after every <form> tag
+    ```
 
 * CSRF Protection for HTML forms:
     - Any HTML forms pointing to POST, PUT, or DELETE routes that are defined 
     in the web routes file should include a CSRF token field. Otherwise, 
     the request will be rejected.
     add @csrf just after <form> tag
-
+    ```php
+        @csrf
+    ```
+    
     - HTML forms do not support PUT, PATCH or DELETE actions. So, when defining 
       PUT, PATCH or  DELETE. add @method('PUT') just after <form> tag
-
+    ```php
+        @method('PUT')
+        @method('PATCH')
+        @method('DELETE') 
+    ```
 * For ajax requests:
-    - add meta tag in headers 
-        - <meta name="csrf-token" content="{{ csrf_token() }}">
-    - instruct ajax Setup
+    - Add meta tag in headers 
+        ```php
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    - Instruct ajax Setup:
         ```javascript
         $.ajaxSetup({
             headers: {
@@ -261,23 +268,30 @@
 ## Laravel Controllers
 
 * Defining Controllers:
-    - Simple Controller: 
+    - Simple Controller:
+        ```php 
         - php artisan make:controller ShowProfile
 
     - Single Request Controller: (One method handle every request in controller)
+        ```php
         - php artisan make:controller ShowProfile --invokable
 
     - Resource controller:
+        ```php
         - php artisan make:controller ShowProfile --resource
 
     - Controller bind with Modal:
+        ```php
         - php artisan make:controller PhotoController --resource --model=Photo
 
     - API Controller
+        ```php
         - php artisan make:controller API/PhotoController --api
 
 * Single Action Controllers:
-    Create: - php artisan make:controller ShowProfile --invokable
+    Create:
+    ```php 
+    - php artisan make:controller ShowProfile --invokable
 
 * Controller Middleware:
     - Route Method:
@@ -298,12 +312,11 @@
     ```php
     Route::resource('photos', 'PhotoController');
 
-    - Register many resource controllers at once.
-        ```php
-        Route::resources([
-            'photos' => 'PhotoController',
-            'posts' => 'PostController'
-        ]);
+    // Register many resource controllers at once.
+    Route::resources([
+        'photos' => 'PhotoController',
+        'posts' => 'PostController'
+    ]);
 
 * API Resource Routes.
     ```php
@@ -328,18 +341,23 @@
     }
 
 * Laravel Request:
+    ```php
     - use Illuminate\Http\Request;
 
-* To generate a route cache: *after when add new route regenerate cache
+* To generate a route cache: *after when add new route regenerate cache:
+    ```php
     - php artisan route:cache
 
 * Clear Route Cache:
+    ```php
     - php artisan route:clear
 
 
 ## Laravel Request
 
-* Access it by: - use Illuminate\Http\Request;
+* Access it by: 
+    ```php
+    - use Illuminate\Http\Request;
 
 * Retrieving The Request Path:
     ```php
@@ -609,8 +627,8 @@
         Hello, {{ $name }}.
 
     - Displaying Unescaped Data:
-        // If you do not want your data to be escaped, you may use the following syntax:
         ```php
+        // If you do not want your data to be escaped, you may use the following syntax:
         Hello, {!! $name !!}.
 
     - Rendering JSON:
@@ -727,55 +745,55 @@
     @while (true)
         <p>I'm looping forever.</p>
     @endwhile
+    ```
+* Break and Continue
+    ```php
+    @foreach ($users as $user)
+        @if ($user->type == 1)
+            @continue
+        @endif
 
-    - Break and Continue
-        ```php
-        @foreach ($users as $user)
-            @if ($user->type == 1)
-                @continue
-            @endif
+        <li>{{ $user->name }}</li>
 
-            <li>{{ $user->name }}</li>
+        @if ($user->number == 5)
+            @break
+        @endif
+    @endforeach
 
-            @if ($user->number == 5)
-                @break
+* The Loop Variable:
+    ```php
+    @foreach ($users as $user)
+        @if ($loop->first)
+            This is the first iteration.
+        @endif
+        @if ($loop->last)
+            This is the last iteration.
+        @endif
+        <p>This is user {{ $user->id }}</p>
+    @endforeach
+
+* The Loop Variable For Nested Loops:
+    ```php
+    @foreach ($users as $user)
+        @foreach ($user->posts as $post)
+            @if ($loop->parent->first)
+                This is first iteration of the parent loop.
             @endif
         @endforeach
+    @endforeach
 
-    - The Loop Variable:
-        ```php
-        @foreach ($users as $user)
-            @if ($loop->first)
-                This is the first iteration.
-            @endif
-            @if ($loop->last)
-                This is the last iteration.
-            @endif
-            <p>This is user {{ $user->id }}</p>
-        @endforeach
-
-    - The Loop Variable For Nested Loops:
-        ```php
-        @foreach ($users as $user)
-            @foreach ($user->posts as $post)
-                @if ($loop->parent->first)
-                    This is first iteration of the parent loop.
-                @endif
-            @endforeach
-        @endforeach
-
-    - Some other loop variable properties:
-        Property    ,	Description
-        $loop->index    ,	The index of the current loop iteration (starts at 0).
-        $loop->iteration    ,	The current loop iteration (starts at 1).
-        $loop->remaining    ,	The iterations remaining in the loop.
-        $loop->count    ,	The total number of items in the array being iterated.
-        $loop->first    ,	Whether this is the first iteration through the loop.
-        $loop->last ,	Whether this is the last iteration through the loop.
-        $loop->even ,	Whether this is an even iteration through the loop.
-        $loop->odd  ,	Whether this is an odd iteration through the loop.
-        $loop->depth    ,	The nesting level of the current loop.
-        $loop->parent   ,	When in a nested loop, the parent's loop variable.
+* Some other loop variable properties:
+    Property    ,	Description
+    $loop->index    ,	The index of the current loop iteration (starts at 0).
+    $loop->iteration    ,	The current loop iteration (starts at 1).
+    $loop->remaining    ,	The iterations remaining in the loop.
+    $loop->count    ,	The total number of items in the array being iterated.
+    $loop->first    ,	Whether this is the first iteration through the loop.
+    $loop->last ,	Whether this is the last iteration through the loop.
+    $loop->even ,	Whether this is an even iteration through the loop.
+    $loop->odd  ,	Whether this is an odd iteration through the loop.
+    $loop->depth    ,	The nesting level of the current loop.
+    $loop->parent   ,	When in a nested loop, the parent's loop variable.
 
 * Comments:
     ```php
@@ -847,13 +865,18 @@
     - For compiling CSS:
         1. Before compiling your CSS, install your project's frontend dependencies using the
             Node package manager (NPM): 
-                - run composer command:   npm install
+                - run composer command:  
+                ```php
+                - npm install
 
         1. After That you can compile your SASS files to plain CSS using Laravel Mix. 
         The "npm run dev" command will process the instructions in your  webpack.mix.js file. 
         Typically, your compiled CSS will be placed in the public/css directory:
-            - For one time compilation:   npm run dev
-            - To Watch every change & compile:     nmp run watch
+            ```php
+                //For one time compilation:   
+                npm run dev
+                //To Watch every change & compile:     
+                nmp run watch
         
         1. To add another css/js file for compilation:
             add in webpack.mix.js file
@@ -871,11 +894,12 @@
 * Compiling Assets (Mix):
     - Installing Node:
         Before triggering Mix, you must first ensure that Node.js and NPM are installed on your machine.
-            - node -v
-            - npm -v
-        Install Laravel Mix:    
-            - npm install
-        
+    ```php
+        - node -v
+        - npm -v
+        //Install Laravel Mix:      
+        - npm install
+    ```
         * "package.json" define Node dependencies while "composer.json" define PHP dependencies.
     
     - Running Mix:
@@ -893,33 +917,33 @@
         1: Less:
             The less method may be used to compile Less into CSS. Let's compile our primary app.less 
             file to public/css/app.css.
-                ```php
-                mix.less('resources/less/app.less', 'public/css');
-        
+    ```php
+    mix.less('resources/less/app.less', 'public/css');
+    ``` 
         2: Sass:
             The sass method allows you to compile Sass into CSS. You may use the method like so:
-                ```php
-                mix.sass('resources/sass/app.scss', 'public/css');
-
+    ```php
+    mix.sass('resources/sass/app.scss', 'public/css');
+    ```
         3: Plain CSS:
             If you would just like to concatenate some plain CSS stylesheets into a single file, 
             you may use the styles method.
-                ```php
-                mix.styles([
-                    'public/css/vendor/normalize.css',
-                    'public/css/vendor/videojs.css'
-                ], 'public/css/all.css');
-
+    ```php
+    mix.styles([
+        'public/css/vendor/normalize.css',
+        'public/css/vendor/videojs.css'
+    ], 'public/css/all.css');
+    ```
         4: Javascript:
-            ```php
-            mix.js('resources/js/app.js', 'public/js');
-
+    ```php
+    mix.js('resources/js/app.js', 'public/js');
+    ```
         5: React:
             Mix can automatically install the Babel plug-ins necessary for React support. 
             To get started, replace your mix.js() call with mix.react():
-                    ```php
-                    mix.react('resources/js/app.jsx', 'public/js');
-        
+    ```php
+    mix.react('resources/js/app.jsx', 'public/js');
+    ```
 * Environment Variables:
 
     You may inject environment variables into Mix by prefixing a key in your .env file with MIX_:
@@ -954,8 +978,8 @@
 * To disable registration process:
     If your application doesn’t need registration, you may disable it by removing 
     the newly created RegisterController and modifying your route declaration.
-        ```php
-        Auth::routes(['register' => false]);.\
+    ```php
+    Auth::routes(['register' => false]);
 
 * Retrieving The Authenticated User:
     ```php
@@ -967,7 +991,7 @@
     // Get the currently authenticated user's ID...
     $id = Auth::id();
     OR
-    $request->user() returns an instance of the authenticated user...
+    $request->user() //returns an instance of the authenticated user...
 
 * Determining If The Current User Is Authenticated:
     ```php
@@ -993,125 +1017,131 @@
         You can customize the post-authentication redirect location by defining a redirectTo 
         property on the  LoginController, RegisterController, ResetPasswordController, 
         and  VerificationController:
-            ```php
-            protected $redirectTo = '/';
+        ```php
+        protected $redirectTo = '/';
     
         Next, you should modify the RedirectIfAuthenticated middleware's handle method to use your 
         new URI when redirecting the user.
         If the redirect path needs custom generation logic you may define a redirectTo 
         method instead of a redirectTo property:
         *The redirectTo method will take precedence over the redirectTo attribute.
-            ```php
-            protected function redirectTo(){
-                return '/path';
-            }
-
+    ```php
+        protected function redirectTo(){
+            return '/path';
+        }
+    ```
     - Username Customization:
             By default, Laravel uses the email field for authentication. If you would like to customize this, 
             you may define a username method on your LoginController:
-                ```php
-                public function username()
-                {
-                    return 'username';
-                }
+        ```php
+        public function username()
+        {
+            return 'username';
+        }
 
 
 * Customizations for Multiple Users Auth:
-    1: Add extra fileds in Users migrations if any like '$table->string('role');'
-    2: Add fileds in User model $fillable array like 'role'
-    3: Add input fields in "Resources/Views/Auth/register.balde.php" like select field for 'role'
-    4: Also add those fields in validator() & create() methods of "Controllers/Auth/RegisterController.php"
+    1. Add extra fileds in Users migrations if any like 
+    ```php
+    $table->string('role');
+    '
+    2. Add fileds in User model $fillable array like 'role'
+    3. Add input fields in "Resources/Views/Auth/register.balde.php" like select field for 'role'
+    4. Also add those fields in validator() & create() methods of "Controllers/Auth/RegisterController.php"
     
-    5: Create Controllers and Views for each role, like StudentController, AdminController, TeacherController etc.
-    6: Define dashboard routes for each role. @index() should return dashboard view for every role.
-    imp.
-    7: Create new Middleware 'checkRole'
-        - php artisan make:middleware checkRole
-
-        - middleware file setup:
-            ```php
-            <?php
-            namespace App\Http\Middleware;
-            use Illuminate\Support\Facades\Auth;    //Add Auth facades
-            use Closure;
-            class checkRole
+    5. Create Controllers and Views for each role, like StudentController, AdminController, TeacherController etc.
+    6. Define dashboard routes for each role. @index() should return dashboard view for every role.
+    
+    7. Create new Middleware 'checkRole'
+```php
+- php artisan make:middleware checkRole
+'
+    * middleware file setup:
+    ```php
+        <?php
+        namespace App\Http\Middleware;
+        use Illuminate\Support\Facades\Auth;    //Add Auth facades
+        use Closure;
+        class checkRole
+        {
+            public function handle($request, Closure $next, $role)  // ***Add 3rd parameter $role
             {
-                public function handle($request, Closure $next, $role)  // ***Add 3rd parameter $role
-                {
-                    if (!Auth::check()) //Optional
-                        return redirect('login');
+                if (!Auth::check()) //Optional
+                    return redirect('login');
 
-                    $user = Auth::user();
-                    if($user->role == $role)    // this $role coming from Controller to verify role authority
-                    {
-                        return $next($request);
-                    }
-                    else    // If not matched goto login then there'll be redirected to correct path
-                    {
-                        return redirect('login');
-                    }
-                    // return $next($request);
-                }
-            }
-        
-        8: Apply middleware to every role Controller like below in AdminController:
-            ```php
-            public function __construct()
-            {
-                //Specify required role for this controller here in checkRole:xyz
-                $this->middleware(['auth', 'checkRole:admin']); 
-            }
-        
-        9: Everything is setup now control redirects towards /home by:
-
-            i. Goto App/Http/Middleware/RedirectIfAuthenticated.php file and change handle() function:
-                ```php
-                //Specify redirects as many roles you have
-                public function handle($request, Closure $next, $guard = null)
+                $user = Auth::user();
+                if($user->role == $role)    // this $role coming from Controller to verify role authority
                 {
-                    if (Auth::guard($guard)->check()) 
-                    {
-                        if(Auth::user()->role == 'admin')
-                        {
-                            return redirect('/admin');
-                        }
-                        else if(Auth::user()->role == 'teacher')
-                        {
-                            return redirect('/teacher');
-                        }
-                        else if(Auth::user()->role == 'student')
-                        {
-                            return redirect('/student');
-                        }
-                        // return redirect('/home');
-                    }
                     return $next($request);
                 }
+                else    // If not matched goto login then there will be redirected to correct path
+                {
+                    return redirect('login');
+                }
+                // return $next($request);
+            }
+        }
+        ?>
+    
+        
+    8: Apply middleware to every role Controller like below in AdminController:
+    ```php
+    public function __construct()
+    {
+        //Specify required role for this controller here in checkRole:xyz
+        $this->middleware(['auth', 'checkRole:admin']); 
+    }
+    
+    9: Everything is setup now control redirects towards /home by:
 
-            ii. Goto LoginController and add redirectTo() method
-                ```php
-                protected function redirectTo()
+        i. Goto App/Http/Middleware/RedirectIfAuthenticated.php file and change handle() function:
+            ```php
+            //Specify redirects as many roles you have
+            public function handle($request, Closure $next, $guard = null)
+            {
+                if (Auth::guard($guard)->check()) 
                 {
                     if(Auth::user()->role == 'admin')
                     {
-                        return '/admin';
+                        return redirect('/admin');
                     }
                     else if(Auth::user()->role == 'teacher')
                     {
-                        return '/teacher';
+                        return redirect('/teacher');
                     }
                     else if(Auth::user()->role == 'student')
                     {
-                        return '/student';
+                        return redirect('/student');
                     }
+                    // return redirect('/home');
                 }
+                return $next($request);
+            }
+
+        ii. Goto LoginController and add redirectTo() method
+            ```php
+            protected function redirectTo()
+            {
+                if(Auth::user()->role == 'admin')
+                {
+                    return '/admin';
+                }
+                else if(Auth::user()->role == 'teacher')
+                {
+                    return '/teacher';
+                }
+                else if(Auth::user()->role == 'student')
+                {
+                    return '/student';
+                }
+            }
+        
+        10: Goto LoginController, RegisterController, ResetPasswordController and VerificationController
             
-            10: Goto LoginController, RegisterController, ResetPasswordController and VerificationController
-                
-                Change this 
-                    - protected $redirectTo = '/home';
-                to this
-                    - protected $redirectTo = '/login';
+            Change this 
+                - protected $redirectTo = '/home';
+            to this
+                - protected $redirectTo = '/login';
             
         EVERYTHING IS DONE!!! 
  
