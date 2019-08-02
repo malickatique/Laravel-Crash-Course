@@ -956,6 +956,7 @@
 ## Laravel Authentication
 
 * Setting things up Just Run: 
+    ```php
     - php artisan make:auth
     - php artisan migrate
 
@@ -968,12 +969,14 @@
     the "ForgotPasswordController" handles e-mailing links for resetting passwords, 
     and the "ResetPasswordController" contains the logic to reset passwords.
 
-    - Routing:
-            - php artisan make:auth
-        This command should be used on fresh applications and will install a layout 
-        view, registration and login views, as well as routes for all authentication 
-        end-points. A HomeController will also be generated to handle post-login requests 
-        to your application's dashboard.
+* Routing:
+    ```php
+    - php artisan make:auth
+    ```
+    This command should be used on fresh applications and will install a layout 
+    view, registration and login views, as well as routes for all authentication 
+    end-points. A HomeController will also be generated to handle post-login requests 
+    to your application's dashboard.
 
 * To disable registration process:
     If your application doesn’t need registration, you may disable it by removing 
@@ -1000,7 +1003,7 @@
         // The user is logged in...
     }
 
-* Redirecting Unauthenticated Users:
+* Redirecting Unauthenticated Users: <br>
     When the auth middleware detects an unauthorized user, it will redirect the user to 
     the login named route. You may modify this behavior by updating the redirectTo 
     function in your  app/Http/Middleware/Authenticate.php file.
@@ -1009,54 +1012,53 @@
     ```php
     Auth::logout();
 
-
-* Customizations:
     
-    - Path Customization:
-        When a user is successfully authenticated, they will be redirected to the /home URI. 
-        You can customize the post-authentication redirect location by defining a redirectTo 
-        property on the  LoginController, RegisterController, ResetPasswordController, 
-        and  VerificationController:
-        ```php
-        protected $redirectTo = '/';
-    
-        Next, you should modify the RedirectIfAuthenticated middleware's handle method to use your 
-        new URI when redirecting the user.
-        If the redirect path needs custom generation logic you may define a redirectTo 
-        method instead of a redirectTo property:
-        *The redirectTo method will take precedence over the redirectTo attribute.
+* Path Customization:
+    When a user is successfully authenticated, they will be redirected to the /home URI. 
+    You can customize the post-authentication redirect location by defining a redirectTo 
+    property on the  LoginController, RegisterController, ResetPasswordController, 
+    and  VerificationController:
     ```php
-        protected function redirectTo(){
-            return '/path';
-        }
+    protected $redirectTo = '/';
+    
+* Next, you should modify the RedirectIfAuthenticated middleware's handle method to use your 
+    new URI when redirecting the user.
+    If the redirect path needs custom generation logic you may define a redirectTo 
+    method instead of a redirectTo property. The redirectTo method will take precedence over the redirectTo attribute.
+    ```php
+    protected function redirectTo(){
+        return '/path';
+    }
     ```
-    - Username Customization:
-            By default, Laravel uses the email field for authentication. If you would like to customize this, 
-            you may define a username method on your LoginController:
-        ```php
-        public function username()
-        {
-            return 'username';
-        }
+* Username Customization:
+    By default, Laravel uses the email field for authentication. If you would like to customize this, 
+    you may define a username method on your LoginController:
+    ```php
+    public function username()
+    {
+        return 'username';
+    }
 
 
-* Customizations for Multiple Users Auth:
-    1. Add extra fileds in Users migrations if any like 
+## Customizations for Multiple Users Auth:
+
+1. Add extra fileds in Users migrations if any like 
     ```php
     $table->string('role');
-    '
-    2. Add fileds in User model $fillable array like 'role'
-    3. Add input fields in "Resources/Views/Auth/register.balde.php" like select field for 'role'
-    4. Also add those fields in validator() & create() methods of "Controllers/Auth/RegisterController.php"
     
-    5. Create Controllers and Views for each role, like StudentController, AdminController, TeacherController etc.
-    6. Define dashboard routes for each role. @index() should return dashboard view for every role.
+2. Add fileds in User model $fillable array like 'role'
+3. Add input fields in "Resources/Views/Auth/register.balde.php" like select field for 'role'
+4. Also add those fields in validator() & create() methods of "Controllers/Auth/RegisterController.php"
     
-    7. Create new Middleware 'checkRole'
-```php
-- php artisan make:middleware checkRole
-'
-    * middleware file setup:
+5. Create Controllers and Views for each role, like StudentController, AdminController, TeacherController etc.
+6. Define dashboard routes for each role. @index() should return dashboard view for every role.
+    
+7. Create new Middleware 'checkRole'
+    ```php
+    - php artisan make:middleware checkRole
+    ```
+
+    * 'checkRole' Middleware file changess:
     ```php
         <?php
         namespace App\Http\Middleware;
@@ -1082,9 +1084,9 @@
             }
         }
         ?>
-    
+    ```
         
-    8: Apply middleware to every role Controller like below in AdminController:
+8. Apply middleware to every role Controller like below in AdminController:
     ```php
     public function __construct()
     {
@@ -1092,56 +1094,58 @@
         $this->middleware(['auth', 'checkRole:admin']); 
     }
     
-    9: Everything is setup now control redirects towards /home by:
+9. Everything is setup now control redirects towards /home by:
 
-        i. Goto App/Http/Middleware/RedirectIfAuthenticated.php file and change handle() function:
-            ```php
-            //Specify redirects as many roles you have
-            public function handle($request, Closure $next, $guard = null)
-            {
-                if (Auth::guard($guard)->check()) 
-                {
-                    if(Auth::user()->role == 'admin')
-                    {
-                        return redirect('/admin');
-                    }
-                    else if(Auth::user()->role == 'teacher')
-                    {
-                        return redirect('/teacher');
-                    }
-                    else if(Auth::user()->role == 'student')
-                    {
-                        return redirect('/student');
-                    }
-                    // return redirect('/home');
-                }
-                return $next($request);
-            }
-
-        ii. Goto LoginController and add redirectTo() method
-            ```php
-            protected function redirectTo()
+    1. Goto App/Http/Middleware/RedirectIfAuthenticated.php file and change handle() function:
+        ```php
+        //Specify redirects as many roles you have
+        public function handle($request, Closure $next, $guard = null)
+        {
+            if (Auth::guard($guard)->check()) 
             {
                 if(Auth::user()->role == 'admin')
                 {
-                    return '/admin';
+                    return redirect('/admin');
                 }
                 else if(Auth::user()->role == 'teacher')
                 {
-                    return '/teacher';
+                    return redirect('/teacher');
                 }
                 else if(Auth::user()->role == 'student')
                 {
-                    return '/student';
+                    return redirect('/student');
                 }
+                // return redirect('/home');
             }
+            return $next($request);
+        }
+
+    1. Goto LoginController and add redirectTo() method
+        ```php
+        protected function redirectTo()
+        {
+            if(Auth::user()->role == 'admin')
+            {
+                return '/admin';
+            }
+            else if(Auth::user()->role == 'teacher')
+            {
+                return '/teacher';
+            }
+            else if(Auth::user()->role == 'student')
+            {
+                return '/student';
+            }
+        }
         
-        10: Goto LoginController, RegisterController, ResetPasswordController and VerificationController
+10. Goto LoginController, RegisterController, ResetPasswordController and VerificationController
             
-            Change this 
-                - protected $redirectTo = '/home';
-            to this
-                - protected $redirectTo = '/login';
+        Change this
+            ```php
+                protected $redirectTo = '/home';
+        to this
+            ```php
+                protected $redirectTo = '/login';
             
         EVERYTHING IS DONE!!! 
  
