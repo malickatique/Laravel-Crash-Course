@@ -1140,12 +1140,12 @@
         
 10. Goto LoginController, RegisterController, ResetPasswordController and VerificationController
             
-        Change this
-            ```php
-                protected $redirectTo = '/home';
-        to this
-            ```php
-                protected $redirectTo = '/login';
+    Change this
+    ```php
+        protected $redirectTo = '/home';
+    //to this
+    ```php
+        protected $redirectTo = '/login';
             
         EVERYTHING IS DONE!!! 
  
