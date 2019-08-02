@@ -866,8 +866,8 @@
         1. Before compiling your CSS, install your project's frontend dependencies using the
             Node package manager (NPM): 
                 - run composer command:  
-                ```php
-                - npm install
+            ```php
+            - npm install
 
         1. After That you can compile your SASS files to plain CSS using Laravel Mix. 
         The "npm run dev" command will process the instructions in your  webpack.mix.js file. 
@@ -1140,8 +1140,8 @@
         
 10. Goto LoginController, RegisterController, ResetPasswordController and VerificationController
             
-    Change this
     ```php
+    //Change this
     protected $redirectTo = '/home';
     //to this
     protected $redirectTo = '/login';
