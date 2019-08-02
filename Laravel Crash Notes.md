@@ -4,31 +4,31 @@
     - php artisan
 
 * Create Laravel Project:
-    composer create-project --prefer-dist laravel/laravel projectName
+    - composer create-project --prefer-dist laravel/laravel projectName
 
 * View it On Local Development Server:
-    php artisan serve
-    This command will start a development server at http://localhost:8000
+    - php artisan serve
+    - This command will start a development server at http://localhost:8000
 
 * Application Key:
-    php artisan key:generate
+    - php artisan key:generate
 
 
 ## Laravel Routes
 
 * View all registered routes:
-    php artisan route:list
+    - php artisan route:list
 
 * Laravel handles routes in Routes/web.php files
 
-    Available Router Methods
+    ** Available Router Methods
 
-    Route::get($uri, $callback);
-    Route::post($uri, $callback);
-    Route::put($uri, $callback);
-    Route::patch($uri, $callback);
-    Route::delete($uri, $callback);
-    Route::options($uri, $callback);
+    - Route::get($uri, $callback);
+    - Route::post($uri, $callback);
+    - Route::put($uri, $callback);
+    - Route::patch($uri, $callback);
+    - Route::delete($uri, $callback);
+    - Route::options($uri, $callback);
 
 * You may need to register a route that responds to multiple HTTP verbs.
     Route::match(['get', 'post'], '/', function () {
