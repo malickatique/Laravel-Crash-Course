@@ -1150,6 +1150,36 @@
     EVERYTHING IS DONE!!! 
  
 
-## Laravel
+## Laravel Account Email Varification
+
+* Model Preparation <br>
+    To get started, verify that your App\User model implements
+    ```php
+    class User extends Authenticatable implements MustVerifyEmail
+    {
+        use Notifiable;
+        // ...
+    }
+
+* The Email Verification Column: <br>
+    Next, your user table must contain an email_verified_at column to store the date 
+    and time that the email address was verified. By default, the users table migration 
+    included with the Laravel framework already includes this column.
+
+* Routing: <br>
+    In Routes/web.php file add
+    ```php
+    Auth::routes(['verify' => true]);
+
+* Protecting Routes: <br>
+    Route middleware can be used to only allow verified users to access a given route. Laravel ships with a verified middleware, which is defined at  Illuminate\Auth\Middleware\EnsureEmailIsVerified. Since this middleware is already registered in your application's HTTP kernel, all you need to do is attach the middleware to a route definition:
+    
+    ```php
+    Route::get('profile', function () {
+        // Only verified users may enter...
+    })->middleware('verified');
+
+## Laravel Eloquent
+ 
 
 ## Laravel
