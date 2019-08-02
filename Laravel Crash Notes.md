@@ -1142,12 +1142,12 @@
             
     Change this
     ```php
-        protected $redirectTo = '/home';
+    protected $redirectTo = '/home';
     //to this
-    ```php
-        protected $redirectTo = '/login';
-            
-        EVERYTHING IS DONE!!! 
+    protected $redirectTo = '/login';
+    ```
+
+    EVERYTHING IS DONE!!! 
  
 
 ## Laravel
