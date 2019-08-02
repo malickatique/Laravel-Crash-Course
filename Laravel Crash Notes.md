@@ -41,7 +41,7 @@
     Route::any('/', function () {
         return "Hello";
     });
-    
+
     Route::get('/', function () {
         return 'Hello World';
     });
@@ -51,30 +51,36 @@
     ```
 
 * Route to return View only (or with data)
+    ```php
     Route::view('/url', 'dir.viewName');
     Route::view('/url', 'viewName', ['name' => 'Taylor'])
-
+    ```
 * Route Parameters:
+    ```php
     Route::get('posts/{post}/comments/{comment}', function ($postId, $commentId) {
         return "Post ID: ".$postId." Comment ID: ".$commentId;
     });
-
+    ```
 * Optional Parameters:
+    ```php
     Route::get('user/{name?}', function ($name = 'John') {
         return $name;
     });
 
 * Regular Expression Constraints:
+    ```php
     Route::get('user/{id}/{name}', function ($id, $name) {
         //you can you one or more args
     })->where(['id' => '[0-9]+', 'name' => '[a-z]+']);
 
 * Named Routes / Redirect routes:
+    ```php
     Route::get('user/{id}/profile', function ($id) {
         //params
     })->name('profile');
 
     How to use it:
+    ```php
     // Generating URLs...
     $url = route('profile', ['id' => 1]);
 
@@ -82,9 +88,11 @@
     return redirect()->route('profile', ['id' => 1]);
 
 * Check / Get Current Route in middleware:
+    ```php
     $request->route()->named('profile');
 
 * Group routes shares same middlewares:
+    ```php
     Route::middleware(['first', 'second'])->group(function () {
         Route::get('/', function () {
             // Uses first & second Middleware
@@ -95,7 +103,8 @@
         });
     });
 
-* Sub-Domain Routing: 
+* Sub-Domain Routing:
+    ```php 
     Route::domain('{account}.myapp.com')->group(function () {
         Route::get('user/{id}', function ($account, $id) {
             //
@@ -103,6 +112,7 @@
     });
 
 * Route Prefixes (using name or without name):
+    ```php
     Route::prefix('admin')->group(function () {
         Route::get('users', function () {
             // Matches The "/admin/users" URL
@@ -115,22 +125,25 @@
     });
 
 * Routes API access Models:
+    ```php
     Route::get('api/users/{user}', function (App\User $user) {
         return $user->email;
     });
 
 * If you are defining a route that redirects to another URI.
+    ```php
     Route::redirect('/here', '/there');
 
 * Fallback Routes *(When no other route matches the incoming request.):
+    ```php
     //The fallback route should always be the last route registered by your application.
     Route::fallback(function () {
         //Show 404 page
     });
 
 * Rate Limiting: *(Limit route requests per minute)
+    ```php
     //Access the following group of routes 60 times per minute.
-
     Route::middleware('auth:api', 'throttle:60,1')->group(function () {
         Route::get('/user', function () {
             //
@@ -138,6 +151,7 @@
     });
 
 * Accessing The Current Route:
+    ```php
     $route = Route::current();
     $name = Route::currentRouteName();
     $action = Route::currentRouteAction();
@@ -146,10 +160,10 @@
 
 ## Laravel Middlewares
 
-* filter HTTP requests entering your application.
+* Laravel Middlewares filter HTTP requests entering your application.
 
 * Defining Middleware:
-    php artisan make:middleware CheckAge
+    - php artisan make:middleware CheckAge
 
 * In handle() function of middleware define rules.
 
@@ -161,12 +175,13 @@
     First assign the middleware a key in your app/Http/Kernel.php file.
     To add your middleware append it to this list $routeMiddleware and assign it a key of your choosing.
     After that use it IN ROUTES:
-    
+    ```php
     Route::get('admin/profile', function () {
         //
     })->middleware('myMiddleware');  
 
 * Assign multiple middlewares to the route:
+    ```php
     Route::get('/', function () {
         //
     })->middleware('first', 'second');
@@ -174,7 +189,7 @@
 * Middleware Groups:
     Sometimes you may want to group several middleware under a single key to make them 
     easier to assign to routes. You may do this using the $middlewareGroups property of your HTTP kernel.
-    
+    ```php
     Route::group(['middleware' => ['web']], function () {
         //
     });
@@ -187,7 +202,7 @@
     Middleware can also receive additional parameters. For example, if your application needs to verify that the authenticated user has a given "role" before performing a given action, you could create a CheckRole middleware that receives a role name as an additional argument.
 
     Additional middleware parameters will be passed to the middleware after the $next argument:
-
+    ```php
     <?php
     namespace App\Http\Middleware;
     use Closure;
@@ -200,7 +215,8 @@
         }
     }
         
-    Middleware parameters may be specified when defining the route by separating the middleware name and parameters with a :. Multiple parameters should be delimited by commas:
+    Middleware parameters may be specified when defining the route by separating the middleware name and parameters with a :. Multiple parameters should be delimited by commas.
+    ```php
     Route::put('post/{id}', function ($id) {
         //
     })->middleware('role:editor'); 
@@ -212,6 +228,7 @@
     OR
 * You may also exclude the routes by adding their URIs to the $except 
   property of the VerifyCsrfToken middleware.
+        ```php
         protected $except = [
             'stripe/*',
             'http://example.com/foo/bar',
@@ -230,8 +247,10 @@
       PUT, PATCH or  DELETE. add @method('PUT') just after <form> tag
 
 * For ajax requests:
-    - add meta tag in headers <meta name="csrf-token" content="{{ csrf_token() }}">
+    - add meta tag in headers 
+        - <meta name="csrf-token" content="{{ csrf_token() }}">
     - instruct ajax Setup
+        ```javascript
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -243,28 +262,30 @@
 
 * Defining Controllers:
     - Simple Controller: 
-        php artisan make:controller ShowProfile
+        - php artisan make:controller ShowProfile
 
     - Single Request Controller: (One method handle every request in controller)
-        php artisan make:controller ShowProfile --invokable
+        - php artisan make:controller ShowProfile --invokable
 
     - Resource controller:
-        php artisan make:controller ShowProfile --resource
+        - php artisan make:controller ShowProfile --resource
 
     - Controller bind with Modal:
-        php artisan make:controller PhotoController --resource --model=Photo
+        - php artisan make:controller PhotoController --resource --model=Photo
 
     - API Controller
-        php artisan make:controller API/PhotoController --api
+        - php artisan make:controller API/PhotoController --api
 
 * Single Action Controllers:
-    Create: php artisan make:controller ShowProfile --invokable
+    Create: - php artisan make:controller ShowProfile --invokable
 
 * Controller Middleware:
     - Route Method:
+        ```php
         Route::get('profile', 'UserController@show')->middleware('auth');
     
     - Using Controller method
+        ```php
         public function __construct(){
             $this->middleware('auth');  //Apply to all requests
             $this->middleware('log')->only('index');    //Apply to only index method request
@@ -272,26 +293,31 @@
         }   
 
 * Resource Controller:
-    php artisan make:controller ShowProfile --resource
+    - php artisan make:controller ShowProfile --resource
      - Than
+    ```php
     Route::resource('photos', 'PhotoController');
 
-    - Register many resource controllers at once:
+    - Register many resource controllers at once.
+        ```php
         Route::resources([
             'photos' => 'PhotoController',
             'posts' => 'PostController'
         ]);
 
-* API Resource Routes:
+* API Resource Routes.
+    ```php
     Route::apiResources([
         'photos' => 'PhotoController',
         'posts' => 'PostController'
     ]);
 
-* Adding methods to the controller:
+* Adding methods to the controller.
+    ```php
     Route::get('photos/popular', 'PhotoController@method');
 
 * Laravel Constructor:
+    ```php
     class UserController extends Controller{
         /* The user repository instance. */
         protected $users;
@@ -302,76 +328,90 @@
     }
 
 * Laravel Request:
-    use Illuminate\Http\Request;
+    - use Illuminate\Http\Request;
 
 * To generate a route cache: *after when add new route regenerate cache
-    php artisan route:cache
+    - php artisan route:cache
 
 * Clear Route Cache:
-    php artisan route:clear
+    - php artisan route:clear
 
 
 ## Laravel Request
 
-* Access it by: use Illuminate\Http\Request;
+* Access it by: - use Illuminate\Http\Request;
 
 * Retrieving The Request Path:
+    ```php
     $uri = $request->path();
     http://domain.com/foo/bar -> return 'foo/bar'
 
 * Matching url pattern 
+    ```php
     if($request->is('admin/*'))
 
 * Retrieving The Request URL:
+    ```php
     // Without Query String...
     $url = $request->url();
     // With Query String...
     $url = $request->fullUrl();
 
 * Retrieving The Request Method:
+    ```php
     if ($request->isMethod('post'))
 
 * Retrieving All Input Data:
+    ```php
     $input = $request->all();
 
 * Retrieving An Input Value:
+    ```php
     $name = $request->input('name');
     OR if not present return default
     $name = $request->input('name', 'malik ateeq');
     $name = $request->input('products.0.name'); // Use dots to access the arrays
 
 * Retrieving A Portion Of The Input Data:
+    ```php
     $input = $request->only(['username', 'password']);
     $input = $request->except(['credit_card']);
 
 * Determining If An Input Value Is Present:
+    ```php
     if ($request->has('name')) //present
     if ($request->filled('name')) //present and not empty
 
 * Retrieving Cookies From Requests: *If you try to change cookies it will consider as invalid
+    ```php
     $value = $request->cookie('name');
 
 * Attaching Cookies To Responses:
+    ```php
     return response('Hello World')->cookie(
         'name', 'value', $minutes
     );
 
 * Retrieving Uploaded Files:
+    ```php
     if ($request->hasFile('photo'))
     $file = $request->file('photo');
     $file = $request->photo;
 
 * File Paths & Extensions:
+    ```php
     $path = $request->photo->path();
     $extension = $request->photo->extension();
 
 * Storing Uploaded Files:
+    ```php
     $path = $request->photo->store('images');
     $path = $request->photo->store('images', 's3');
     $path = $request->photo->storeAs('images', 'filename.jpg');
 
 ## HTTP Responses Return responses
 * Responses:
+    ```php
     Route::get('/', function () {
         return 'Hello World';
     });
@@ -387,6 +427,7 @@
 
 * Redirects:
     - Redirect from controller:
+    ```php
     return redirect('home')
 
     Route::get('dashboard', function () {
@@ -408,16 +449,18 @@
         'UserController@profile', ['id' => 1]
     );
 
-    - Redirecting To External Domains
+    // Redirecting To External Domains
     return redirect()->away('https://www.google.com');
 
     return response()->file($pathToFile);
 
 * View Responses:
+    ```php
     return response()
             ->view('hello', $data, 200);
     
 * JSON Responses:
+    ```javascript
     return response()->json([
         'name' => 'Abigail',
         'state' => 'CA'
@@ -426,13 +469,16 @@
 ## Laravel Views
 
 * Determining If A View Exists:
+    ```php
     if (View::exists('emails.customer'))
 
 * Passing Data To Views:
+    ```php
     return view('greetings', ['name' => 'Victoria']);
     return view('greeting')->with('name', 'Victoria');
 
 * Sharing Data With All Views:
+    ```php
     Goto AppServiceProvider>boot() method
         public function boot(){
             View::share('key', 'value');
@@ -441,6 +487,7 @@
 ## Laravel Validation
 
 * add this in the start of the method where validation is required
+    ```php
     $validatedData = $request->validate([
         'title' => 'required|unique:posts|max:255',
         'body' => 'required',
@@ -453,11 +500,13 @@
     ]);
 
 * For nested attributes:
+    ```php
     'author.description' => 'required',
 
 * Errors will be available in $errors 
 
 * Display errors in View
+    ```php
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -473,10 +522,11 @@
 ## Laravel Blade Templates
 
 * Define a blade file:
-    make a file "fileName.blade.php" in "resources/views"
+    - make a file "fileName.blade.php" in "resources/views"
 
 * Template Layout:
     - Master page:
+        ```php
         <html>
         <head>
             <title>Parent - @yield('title')</title>
@@ -493,6 +543,7 @@
         </html>
 
     - Extending A Layout:
+        ```php
         @extends('layouts.app')
         @section('title', 'Child Page')
         @section('sidebar')
@@ -506,6 +557,7 @@
 * Components & Slots (Resuable throughout the project)
 
     - Make a component:
+        ```php
         <!-- /resources/views/alert.blade.php -->
         <div class="alert alert-danger">
             {{ $slot }}
@@ -514,18 +566,20 @@
         *The {{ $slot }} variable will contain the content we wish to inject into the component.
 
     - Use the component:
+        ```php
         @component('alert')
             <strong>Whoops!</strong> Something went wrong!
         @endcomponent
 
     - Inject content into slot:
+        ```php
         <!-- /resources/views/alert.blade.php -->
         <div class="alert alert-danger">
             <div class="alert-title">{{ $title }}</div>
             {{ $slot }}
         </div>
 
-        Inject it as:
+        // Inject it as
         @component('alert')
             @slot('title')
                 Forbidden
@@ -534,32 +588,38 @@
         @endcomponent
 
     - Access components in a subdirectories:
+        ```php
         if present in: "resources/views/components/alert.blade.php"
         then access as: "components.alert"
 
     - Define conponents in boot() method of "App/Providers/AppServiceProvider.php"
-        Define:
+        1. Define:
+            ```php
             use Illuminate\Support\Facades\Blade;
             Blade::component('components.alert', 'alert');
-        Use:
+        2. Use:
+            ```php
             @alert
                 You are not allowed to access this resource!
             @endalert
 
 * Displaying Data in Views:
-    You may display the contents of the name variable like so:
+    - You may display the contents of the name variable like so:
+        ```php
         Hello, {{ $name }}.
 
     - Displaying Unescaped Data:
-    If you do not want your data to be escaped, you may use the following syntax:
+        // If you do not want your data to be escaped, you may use the following syntax:
+        ```php
         Hello, {!! $name !!}.
 
     - Rendering JSON:
+        ```php
         <script>
             var app = <?php echo json_encode($array); ?>;
         </script>
         
-        OR Use blade directive @json
+        // OR Use blade directive @json
 
         <script>
             var app = @json($array);
@@ -567,9 +627,10 @@
         </script>
 
     - Displaying JS Variables:
-        1. 
+        ```php
+        //1. 
             Hello, @{{ jsVariable }}
-        2. 
+        //2. 
         @verbatim
             <div class="container">
                 Hello, {{ jsVariable }}
@@ -577,6 +638,7 @@
         @endverbatim
 
 * If Statements:
+    ```php
     @if (count($records) === 1)
         I have one record!
     @elseif (count($records) > 1)
@@ -586,11 +648,13 @@
     @endif
 
 * Unless directive:
+    ```php
     @unless (Auth::check())
         You are not signed in.
     @endunless
 
 * isset and empty directives:
+    ```php
     @isset($records)
         // $records is defined and is not null...
     @endisset
@@ -600,7 +664,7 @@
     @endempty
 
 * Authentication Directives:
-
+    ```php
     @auth
         // The user is authenticated...
     @endauth
@@ -610,7 +674,7 @@
     @endguest
 
 * Authentication guards:
-
+    ```php
     @auth('admin')
         // The user is authenticated...
     @endauth
@@ -620,7 +684,7 @@
     @endguest
 
 * Has Section Directives:
-
+    ```php
     @hasSection('navigation')
         <div class="pull-right">
             @yield('navigation')
@@ -630,7 +694,7 @@
     @endif
 
 * Switch Statements:
-
+    ```php
     @switch($i)
         @case(1)
             First case...
@@ -645,6 +709,7 @@
     @endswitch
 
 * Loops:
+    ```php
     @for ($i = 0; $i < 10; $i++)
         The current value is {{ $i }}
     @endfor
@@ -663,7 +728,8 @@
         <p>I'm looping forever.</p>
     @endwhile
 
-    - Break and Continue:
+    - Break and Continue
+        ```php
         @foreach ($users as $user)
             @if ($user->type == 1)
                 @continue
@@ -677,6 +743,7 @@
         @endforeach
 
     - The Loop Variable:
+        ```php
         @foreach ($users as $user)
             @if ($loop->first)
                 This is the first iteration.
@@ -688,6 +755,7 @@
         @endforeach
 
     - The Loop Variable For Nested Loops:
+        ```php
         @foreach ($users as $user)
             @foreach ($user->posts as $post)
                 @if ($loop->parent->first)
@@ -710,20 +778,25 @@
         $loop->parent   ,	When in a nested loop, the parent's loop variable.
 
 * Comments:
+    ```php
     {{-- This comment will not be present in the rendered HTML --}}
 
 * PHP Directive to use some kind of php code:
+    ```php
     @php
         // php code...
     @endphp
 
 * CSRF Field: 
+    ```php
     @csrf   //Just below the <form> tag
 
 * Method Field: *Only for PUT, PATCH, or DELETE spoofing
+    ```php
     @method('PUT')  //Just below the <form> tag
 
 * Validation Errors:
+    ```php
     <input id="title" type="text" class="@error('title') is-invalid @enderror">
     
     @error('title')
@@ -731,6 +804,7 @@
     @enderror
 
 * Including Sub-Views:
+    ```php
     <div>
         @include('shared.errors')
         <form>
@@ -740,14 +814,16 @@
 
 * Custom If Statements (Use env variables in blade)
 
-    Define in boot() methof of "App/Providers/AppServiceProvider"
+    - Define in boot() methof of "App/Providers/AppServiceProvider"
+        ```php
         use Illuminate\Support\Facades\Blade;
         public function boot(){
             Blade::if('env', function ($environment) {
                 return app()->environment($environment);
             });
         }
-    Once the custom conditional has been defined, we can easily use it on our templates:
+    - Once the custom conditional has been defined, we can easily use it on our templates:
+        ```php
         @env('local')
             // The application is in the local environment...
         @elseenv('testing')
@@ -758,6 +834,7 @@
 
 
 ## Laravel Localization, Other Language support
+
     https://laravel.com/docs/5.8/localization
 
 ## Laravel JavaScript & CSS Scaffolding
@@ -768,19 +845,19 @@
     or remove packages from the package.json
 
     - For compiling CSS:
-        i. Before compiling your CSS, install your project's frontend dependencies using the
+        1. Before compiling your CSS, install your project's frontend dependencies using the
             Node package manager (NPM): 
-                run composer command:   npm install
+                - run composer command:   npm install
 
-        ii. After That you can compile your SASS files to plain CSS using Laravel Mix. 
+        1. After That you can compile your SASS files to plain CSS using Laravel Mix. 
         The "npm run dev" command will process the instructions in your  webpack.mix.js file. 
         Typically, your compiled CSS will be placed in the public/css directory:
-            For one time compilation:   npm run dev
-            To Watch every change & compile:     nmp run watch
+            - For one time compilation:   npm run dev
+            - To Watch every change & compile:     nmp run watch
         
-        iii. To add another css/js file for compilation:
+        1. To add another css/js file for compilation:
             add in webpack.mix.js file
-
+            ```php
             mix.js('resources/js/app.js', 'public/js')
                 .js('resources/js/custom.js', 'public/js')
                 .sass('resources/sass/app.scss', 'public/css')
@@ -794,14 +871,15 @@
 * Compiling Assets (Mix):
     - Installing Node:
         Before triggering Mix, you must first ensure that Node.js and NPM are installed on your machine.
-            node -v
-            npm -v
+            - node -v
+            - npm -v
         Install Laravel Mix:    
-            npm install
+            - npm install
         
         * "package.json" define Node dependencies while "composer.json" define PHP dependencies.
     
     - Running Mix:
+        ```php
         // Run all Mix tasks...
         npm run dev
 
@@ -815,26 +893,31 @@
         1: Less:
             The less method may be used to compile Less into CSS. Let's compile our primary app.less 
             file to public/css/app.css.
+                ```php
                 mix.less('resources/less/app.less', 'public/css');
         
         2: Sass:
             The sass method allows you to compile Sass into CSS. You may use the method like so:
+                ```php
                 mix.sass('resources/sass/app.scss', 'public/css');
 
         3: Plain CSS:
             If you would just like to concatenate some plain CSS stylesheets into a single file, 
             you may use the styles method.
+                ```php
                 mix.styles([
                     'public/css/vendor/normalize.css',
                     'public/css/vendor/videojs.css'
                 ], 'public/css/all.css');
 
         4: Javascript:
+            ```php
             mix.js('resources/js/app.js', 'public/js');
 
         5: React:
             Mix can automatically install the Babel plug-ins necessary for React support. 
             To get started, replace your mix.js() call with mix.react():
+                    ```php
                     mix.react('resources/js/app.jsx', 'public/js');
         
 * Environment Variables:
@@ -844,13 +927,13 @@
     After the variable has been defined in your .env file, you may access via the process.env object. 
     If the value changes while you are running a watch task, you will need to restart the task:
     
-        process.env.MIX_SENTRY_DSN_PUBLIC
+        - process.env.MIX_SENTRY_DSN_PUBLIC
 
 ## Laravel Authentication
 
 * Setting things up Just Run: 
-    php artisan make:auth
-    php artisan migrate
+    - php artisan make:auth
+    - php artisan migrate
 
 * Authentication Quickstart:
     Laravel ships with several pre-built authentication controllers, which are located 
@@ -862,7 +945,7 @@
     and the "ResetPasswordController" contains the logic to reset passwords.
 
     - Routing:
-            ~ php artisan make:auth
+            - php artisan make:auth
         This command should be used on fresh applications and will install a layout 
         view, registration and login views, as well as routes for all authentication 
         end-points. A HomeController will also be generated to handle post-login requests 
@@ -871,10 +954,11 @@
 * To disable registration process:
     If your application doesn’t need registration, you may disable it by removing 
     the newly created RegisterController and modifying your route declaration.
+        ```php
         Auth::routes(['register' => false]);.\
 
 * Retrieving The Authenticated User:
-    
+    ```php
     use Illuminate\Support\Facades\Auth;
 
     // Get the currently authenticated user...
@@ -886,6 +970,7 @@
     $request->user() returns an instance of the authenticated user...
 
 * Determining If The Current User Is Authenticated:
+    ```php
     use Illuminate\Support\Facades\Auth;
     if (Auth::check()) {
         // The user is logged in...
@@ -897,8 +982,8 @@
     function in your  app/Http/Middleware/Authenticate.php file.
 
 * Logging Out:
+    ```php
     Auth::logout();
-
 
 
 * Customizations:
@@ -908,7 +993,7 @@
         You can customize the post-authentication redirect location by defining a redirectTo 
         property on the  LoginController, RegisterController, ResetPasswordController, 
         and  VerificationController:
-
+            ```php
             protected $redirectTo = '/';
     
         Next, you should modify the RedirectIfAuthenticated middleware's handle method to use your 
@@ -916,7 +1001,7 @@
         If the redirect path needs custom generation logic you may define a redirectTo 
         method instead of a redirectTo property:
         *The redirectTo method will take precedence over the redirectTo attribute.
-
+            ```php
             protected function redirectTo(){
                 return '/path';
             }
@@ -924,7 +1009,7 @@
     - Username Customization:
             By default, Laravel uses the email field for authentication. If you would like to customize this, 
             you may define a username method on your LoginController:
-
+                ```php
                 public function username()
                 {
                     return 'username';
@@ -941,9 +1026,10 @@
     6: Define dashboard routes for each role. @index() should return dashboard view for every role.
     imp.
     7: Create new Middleware 'checkRole'
-        ~ php artisan make:middleware checkRole
+        - php artisan make:middleware checkRole
 
         - middleware file setup:
+            ```php
             <?php
             namespace App\Http\Middleware;
             use Illuminate\Support\Facades\Auth;    //Add Auth facades
@@ -969,6 +1055,7 @@
             }
         
         8: Apply middleware to every role Controller like below in AdminController:
+            ```php
             public function __construct()
             {
                 //Specify required role for this controller here in checkRole:xyz
@@ -978,6 +1065,7 @@
         9: Everything is setup now control redirects towards /home by:
 
             i. Goto App/Http/Middleware/RedirectIfAuthenticated.php file and change handle() function:
+                ```php
                 //Specify redirects as many roles you have
                 public function handle($request, Closure $next, $guard = null)
                 {
@@ -1001,7 +1089,7 @@
                 }
 
             ii. Goto LoginController and add redirectTo() method
-
+                ```php
                 protected function redirectTo()
                 {
                     if(Auth::user()->role == 'admin')
@@ -1021,9 +1109,9 @@
             10: Goto LoginController, RegisterController, ResetPasswordController and VerificationController
                 
                 Change this 
-                    protected $redirectTo = '/home';
+                    - protected $redirectTo = '/home';
                 to this
-                    protected $redirectTo = '/login';
+                    - protected $redirectTo = '/login';
             
         EVERYTHING IS DONE!!! 
  
