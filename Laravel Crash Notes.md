@@ -23,12 +23,12 @@
 
     ** Available Router Methods
 
-    - Route::get($uri, $callback);
-    - Route::post($uri, $callback);
-    - Route::put($uri, $callback);
-    - Route::patch($uri, $callback);
-    - Route::delete($uri, $callback);
-    - Route::options($uri, $callback);
+    1. Route::get($uri, $callback);
+    1. Route::post($uri, $callback);
+    1. Route::put($uri, $callback);
+    1. Route::patch($uri, $callback);
+    1. Route::delete($uri, $callback);
+    1. Route::options($uri, $callback);
 
 * You may need to register a route that responds to multiple HTTP verbs.
     Route::match(['get', 'post'], '/', function () {
