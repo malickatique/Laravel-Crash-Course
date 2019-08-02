@@ -167,10 +167,10 @@
 * In handle() function of middleware define rules.
 
 * Registering Middlewares:
-  - Global Middleware:
+  - Global Middleware: <br>
     List the middleware class in the $middleware property of your app/Http/Kernel.php class.
 
-  - Assigning Middleware To Routes:
+  - Assigning Middleware To Routes: <br>
     First assign the middleware a key in your app/Http/Kernel.php file.
     To add your middleware append it to this list $routeMiddleware and assign it a key of your choosing.
     After that use it IN ROUTES:
@@ -185,7 +185,7 @@
         //
     })->middleware('first', 'second');
 
-* Middleware Groups:
+* Middleware Groups: <br>
     Sometimes you may want to group several middleware under a single key to make them 
     easier to assign to routes. You may do this using the $middlewareGroups property of your HTTP kernel.
     ```php
@@ -193,11 +193,11 @@
         //
     });
 
-* Sorting Middleware
+* Sorting Middleware:  <br>
     Rarely, you may need your middleware to execute in a specific order. In this case, you may 
     specify your middleware priority using the $middlewarePriority property of your app/Http/Kernel.php file.
 
-* Middleware Parameters
+* Middleware Parameters:  <br>
     Middleware can also receive additional parameters. For example, if your application needs to verify that the authenticated user has a given "role" before performing a given action, you could create a CheckRole middleware that receives a role name as an additional argument.
 
     Additional middleware parameters will be passed to the middleware after the $next argument:
@@ -236,7 +236,7 @@
         ];
     ```
 
-* CSRF Protection for HTML forms:
+* CSRF Protection for HTML forms: <br>
     - Any HTML forms pointing to POST, PUT, or DELETE routes that are defined 
     in the web routes file should include a CSRF token field. Otherwise, 
     the request will be rejected.
@@ -782,7 +782,7 @@
         @endforeach
     @endforeach
 
-* Some other loop variable properties:
+* Some other loop variable properties:  <br>
     Property    ,	Description
     $loop->index    ,	The index of the current loop iteration (starts at 0).
     $loop->iteration    ,	The current loop iteration (starts at 1).
@@ -857,12 +857,12 @@
 
 ## Laravel JavaScript & CSS Scaffolding
 
-* Writing CSS:
+* Writing CSS: <br>
     Laravel's package.json file includes the bootstrap package to help you get started 
     prototyping your application's frontend using Bootstrap. However, feel free to add 
     or remove packages from the package.json
 
-    - For compiling CSS:
+    - For compiling CSS: <br>
         1. Before compiling your CSS, install your project's frontend dependencies using the
             Node package manager (NPM): 
                 - run composer command:  
@@ -872,12 +872,12 @@
         1. After That you can compile your SASS files to plain CSS using Laravel Mix. 
         The "npm run dev" command will process the instructions in your  webpack.mix.js file. 
         Typically, your compiled CSS will be placed in the public/css directory:
-            ```php
-                //For one time compilation:   
-                npm run dev
-                //To Watch every change & compile:     
-                nmp run watch
-        
+        ```php
+            //For one time compilation:   
+            npm run dev
+            //To Watch every change & compile:     
+            nmp run watch
+        ```
         1. To add another css/js file for compilation:
             add in webpack.mix.js file
             ```php
@@ -887,7 +887,7 @@
                 .sass('resources/sass/custom.scss', 'public/css');
 
 
-* Writing JavaScript:
+* Writing JavaScript: <br>
     All of the JavaScript dependencies required by your application can be found 
     in the  package.json file in the project's root directory. 
 
@@ -944,7 +944,7 @@
     ```php
     mix.react('resources/js/app.jsx', 'public/js');
     ```
-* Environment Variables:
+* Environment Variables: <br>
 
     You may inject environment variables into Mix by prefixing a key in your .env file with MIX_:
     MIX_SENTRY_DSN_PUBLIC=http://example.com
@@ -960,7 +960,7 @@
     - php artisan make:auth
     - php artisan migrate
 
-* Authentication Quickstart:
+* Authentication Quickstart: <br>
     Laravel ships with several pre-built authentication controllers, which are located 
     in the  App\Http\Controllers\Auth namespace.
 
@@ -978,7 +978,7 @@
     end-points. A HomeController will also be generated to handle post-login requests 
     to your application's dashboard.
 
-* To disable registration process:
+* To disable registration process: <br>
     If your application doesn’t need registration, you may disable it by removing 
     the newly created RegisterController and modifying your route declaration.
     ```php
@@ -1013,7 +1013,7 @@
     Auth::logout();
 
     
-* Path Customization:
+* Path Customization: <br>
     When a user is successfully authenticated, they will be redirected to the /home URI. 
     You can customize the post-authentication redirect location by defining a redirectTo 
     property on the  LoginController, RegisterController, ResetPasswordController, 
@@ -1030,7 +1030,7 @@
         return '/path';
     }
     ```
-* Username Customization:
+* Username Customization: <br>
     By default, Laravel uses the email field for authentication. If you would like to customize this, 
     you may define a username method on your LoginController:
     ```php
@@ -1180,6 +1180,6 @@
     })->middleware('verified');
 
 ## Laravel Eloquent
- 
+
 
 ## Laravel
