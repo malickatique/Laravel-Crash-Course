@@ -24,27 +24,31 @@
     ** Available Router Methods
 
     1. Route::get($uri, $callback);
-    1. Route::post($uri, $callback);
-    1. Route::put($uri, $callback);
-    1. Route::patch($uri, $callback);
-    1. Route::delete($uri, $callback);
-    1. Route::options($uri, $callback);
+    2. Route::post($uri, $callback);
+    3. Route::put($uri, $callback);
+    4. Route::patch($uri, $callback);
+    5. Route::delete($uri, $callback);
+    6. Route::options($uri, $callback);
 
 * You may need to register a route that responds to multiple HTTP verbs.
+    ```php
     Route::match(['get', 'post'], '/', function () {
         return "Hello";
     });
-
+    ```
 * You may even register a route that responds to all HTTP verbs .
+    ```php
     Route::any('/', function () {
         return "Hello";
     });
-
+    
     Route::get('/', function () {
         return 'Hello World';
     });
 
     Route::get('/user', 'UserController@index');
+    
+    ```
 
 * Route to return View only (or with data)
     Route::view('/url', 'dir.viewName');
