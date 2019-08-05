@@ -125,7 +125,7 @@
 
 * Routes API access Models:
     ```php
-    Route::get('api/users/{user}', function (App\User $user) {
+    Route::get('api/users/{user}', function (User $user) {
         return $user->email;
     });
 
@@ -1181,5 +1181,311 @@
 
 ## Laravel Eloquent
 
+* Each database table has a corresponding "Model" which is used to interact with that table.
+* Models allow you to query for data in your tables, as well as insert new records into the table.
 
-## Laravel
+* Defining Models:
+    ```php
+    // Create Model Only
+    php artisan make:model Flight
+
+    // Create Model along with Migration
+    php artisan make:model Flight --migration
+    //or
+    php artisan make:model Flight -m
+
+* Set Table Names of a Model: <br>
+    By convention, the "snake case", plural name of the class will be used as the table name unless 
+    another name is explicitly specified. So, in this case, Eloquent will assume the "Flight" model 
+    stores records in the "flights" table.
+
+    ```php
+    // Specify table name
+    protected $table = 'my_flights';
+
+    // For Mass Assignment
+    protected $fillable = ['name', 'phone', 'email'];
+    
+    // The attributes that aren't mass assignable.
+    protected $guarded = ['price'];
+
+* Primary Keys: <br>
+    Eloquent will also assume that each table has a primary key column named id. You may define a 
+    protected $primaryKey property to override this convention:
+
+    ```php
+
+    // Specify table primary key
+    protected $primaryKey = 'flight_id';
+
+    // If key is not auto increment then add
+    public $incrementing = false;
+
+    // If key is not integer than
+    protected $keyType = 'string';
+
+    // If you don't want to handle timestamps
+    public $timestamps = false;
+
+    // Default Attribute Values
+    <?php
+    namespace App;
+    use Illuminate\Database\Eloquent\Model;
+    class Flight extends Model{
+        /**
+        * The model's default values for attributes.
+        * @var array
+        */
+        protected $attributes = [
+            'delayed' => false,
+        ];
+    }
+
+* Retrieving Models: <br>
+
+    ```php
+    // Fetch all data
+    <?php
+    use App\Flight;
+    $flights = Flight::all();
+    foreach ($flights as $flight) {
+        echo $flight->name;
+    }
+
+    // Fetch with conditions
+    $flights = Flight::where('active', 1)
+            ->orderBy('name', 'desc')
+            ->take(10)
+            ->get();
+
+    // Fresh record
+    $flight = Flight::where('number', 'FR 900')->first();
+    $flight->number = 'FR 456';
+    $flight->refresh();
+    $flight->number; // "FR 900"
+
+    // Get Chunk results
+    Flight::chunk(200, function ($flights) {
+        foreach ($flights as $flight) {
+            //
+        }
+    });
+
+    // Retrieve a model by its primary key...
+    $flight = Flight::find(1);
+
+    // Retrieve the first model matching the query constraints...
+    $flight = Flight::where('active', 1)->first();
+
+    // Will return array of results
+    $flights = Flight::find([1, 2, 3]);
+
+    // If not found exception will be thrown
+    $model = Flight::findOrFail(1);
+    $model = Flight::where('legs', '>', 100)->firstOrFail();
+
+    // Retrieving Aggregates
+    $count = Flight::where('active', 1)->count();
+    $max = Flight::where('active', 1)->max('price');
+
+* Inserting, Updating & Deleting Models: <br>
+
+    - Insert Data: <br>
+        ```php
+        // Validate the request...
+        $flight = new Flight;
+        $flight->name = $request->name;
+        $flight->save();
+
+        // Create and Store a record 
+        $flight = App\Flight::create(['name' => 'Flight 10']);
+
+    - Updates Records: <br>
+    
+        ```php
+        // Validate the request...
+        $flight = Flight::find(1);
+        $flight->name = 'New Flight Name';
+        $flight->save();
+
+        // Mass Updates
+        App\Flight::where('active', 1)
+                ->where('destination', 'San Diego')
+                ->update(['delayed' => 1]);
+        
+        // Fill data
+        $flight->fill(['name' => 'Flight 22']);
+        ```
+
+    - Deletes Records: <br>
+        ```php
+        // Find and delete
+        $flight = Flight::find(1);
+        $flight->delete();
+
+        //Delete by PK
+        Flight::destroy(1);
+        Flight::destroy(1, 2, 3);
+        Flight::destroy([1, 2, 3]);
+        Flight::destroy(collect([1, 2, 3]));
+
+        // Delete where sth
+        $deletedRows = Flight::where('active', 0)->delete();
+
+        // Soft Deleting: When models are soft deleted, they are not actually removed from your database. 
+        use Illuminate\Database\Eloquent\SoftDeletes;
+        class Flight extends Model
+        {
+            use SoftDeletes;
+            Schema::table('flights', function (Blueprint $table) {
+                $table->softDeletes();
+            });
+        }
+
+        // Querying Soft Deleted Models
+        $flights = App\Flight::withTrashed()
+                        ->where('account_id', 1)
+                        ->get();
+
+        // Restoring Soft Deleted Models
+        $flight->restore();
+        // and 
+        App\Flight::withTrashed()
+                ->where('airline_id', 1)
+                ->restore();
+                
+        // Force deleting a single model instance...
+        $flight->forceDelete();
+
+        // Force deleting all related models...
+        $flight->history()->forceDelete();
+
+* For Query Scopes, Comparing Models, Events and Observers goto: <br>
+    https://laravel.com/docs/5.8/eloquent#query-scopes
+
+* Relationships: <br> 
+
+
+## Eloquent: Relationships
+
+Eloquent relationships are defined as methods on your Eloquent model classes.
+
+* One To One Relationship: <br>
+    A one-to-one relationship is a very basic relation. For example, a User model might be associated with one Phone. To define this relationship, we place a phone method on the User model. The phone method should call the hasOne method and return its result.
+
+    ```php
+    <?php
+    namespace App;
+    use Illuminate\Database\Eloquent\Model;
+    class User extends Model
+    {
+        public function phone()
+        {
+            return $this->hasOne('App\Phone');
+        }
+        // The first argument passed to the hasOne method is the name of the related model.
+        // Once the relationship is defined, we may retrieve the related record using Eloquent's dynamic properties. 
+    }
+    ```
+
+    ```php
+    $phone = User::find(1)->phone;
+    ```
+
+#### Eloquent determines the foreign key of the relationship based on the model name. In this case, the Phone model is automatically assumed to have a user_id foreign key. If you wish to override this convention, you may pass a second argument to the hasOne method. Foreign key in Phone table of User.
+
+    ```php
+    return $this->hasOne('App\Phone', 'foreign_key');
+
+    return $this->hasOne('App\Phone', 'foreign_key', 'local_key');
+    ```
+
+#### 'foreign_key' == Exact name of foreign key (id of User Table) in Phone table.
+#### 'local_key' == Exact name of primary key (of User) in User table. <br>
+
+### Defining The Inverse Of The Relationship: <br>
+   * So, we can access the Phone model from our User. Now, let's define a relationship on the  Phone model that will let us access the User that owns the phone. We can define the inverse of a hasOne relationship using the belongsTo method:
+    
+    ```php
+    <?php
+    namespace App;
+    use Illuminate\Database\Eloquent\Model;
+    class Phone extends Model{
+        /**
+         * Get the user that owns the phone.
+         */
+        public function user(){
+            return $this->belongsTo('App\User');
+            //OR
+            return $this->belongsTo('App\User', 'foreign_key_in_Phone', 'PK_in_User');
+        }
+    }
+    `
+
+* One To Many Relationship:
+    A one-to-many relationship is used to define relationships where a single model owns any amount of other models. For example, a blog post may have an infinite number of comments. 
+    
+    ```php
+    return $this->hasMany('App\Comment', 'foreign_key', 'local_key');
+    
+    // Chaining conditions
+    $comment = App\Post::find(1)->comments()->where('title', 'foo')->first();
+
+### One To Many (Inverse):
+
+* Allow a comment to access its parent post.
+    
+    ```php
+    <?php
+
+    namespace App;
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class Comment extends Model
+    {
+        /**
+        * Get the post that owns the comment.
+        */
+        public function post()
+        {
+            return $this->belongsTo('App\Post');
+            // OR
+            return $this->belongsTo('App\Post', 'foreign_key', 'other_key');
+        }
+    }
+
+    // Retriving data:
+    $comment = App\Comment::find(1);
+    echo $comment->post->title;
+
+* Many To Many Relationship:
+    Many-to-many relations are slightly more complicated than hasOne and hasMany relationships. An example of such a relationship is a user with many roles, where the roles are also shared by other users. For example, many users may have the role of "Admin". To define this relationship, three database tables are needed: users, roles, and role_user. The  role_user table is derived from the alphabetical order of the related model names, and contains the user_id and role_id columns.
+
+    Many-to-many relationships are defined by writing a method that returns the result of the  belongsToMany method. For example, let's define the roles method on our User model:
+    
+    ```php
+    <?php
+
+    namespace App;
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class User extends Model
+    {
+        /**
+        * The roles that belong to the user.
+        */
+        public function roles()
+        {
+            return $this->belongsToMany('App\Role');
+            // OR
+            return $this->belongsToMany('App\Role', 'role_user', 'user_id', 'role_id');
+        }
+    }
+
+
+
+## Laravel Extras:
+
+
