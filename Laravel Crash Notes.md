@@ -1488,4 +1488,48 @@ Eloquent relationships are defined as methods on your Eloquent model classes.
 
 ## Laravel Extras:
 
+* Deploy Project to Shared Hosting:
+
+1. Remove unnecessery space/comments from start of Routes > web.php file
+2. Add '/*' in $except, file in middlewares folder verifyCsrfToken.php if tokenMismatchException occurs.
+3. If public and root folders are present seperately then: 
+
+    ```php
+	In \App\Providers\AppServiceProvider register() method.
+	$this->app->bind('path.public', function() {
+        	return '/home4/demoaspi/public_html/2019/ovrvue/';});
+    ```
+
+4. change paths in index.php file
+
+5. For database configurations:
+    ```php
+	DB_USERNAME=demoaspi_defuser
+	DB_PASSWORD=~CUkh$0Y9QLK
+    ```
+
+6. Other ISSUE while deploying:
+
+1. Axios request Base URL:
+   Change axios request base url: In Resources>Assets>js>boostrap.js
+   Add this: window.axios.defaults.baseURL = '/2019/ovrvue';
+   after this:  window.axios = require('axios');
+
+1. Pics and other path issues:
+    ```php
+    // For Vue Js
+    add Vue.prototype.$baseURL = '/2019/ovrvue/'; in resources>assets>js>app.js file
+    then change all path with Vue.prototype.$baseURL+/images etc
+    ```
+
+1. Uncomment following
+    ```php
+    //Uncomment it for live server in bootstrap.js
+    // authEndpoint: 'http://www.demoaspire.com/2019/ovrvue/broadcasting/auth',
+    
+    Vue.prototype.$baseURL = '/2019/ovrvue'; = '/2019/ovrvue'; in resources>assets>js>app.js
+    window.axios.defaults.baseURL = '/2019/ovrvue'; in resources>assets>js>bootstrap.js
+
+    // window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content; //Uncomment it if needed
+
 
