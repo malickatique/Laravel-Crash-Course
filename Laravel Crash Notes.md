@@ -1537,6 +1537,7 @@ Eloquent relationships are defined as methods on your Eloquent model classes.
 1. When mex length 191 deb_fields
     ```php
     //go to app/Providers/AppServiceProvider.php
-    //place this in boot function
+    //place this in boot function plus include
+    use Illuminate\Support\Facades\Schema;
     Schema::defaultStringLength(191);
     ```
