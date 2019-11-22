@@ -32,7 +32,7 @@
 
 * You may need to register a route that responds to multiple HTTP verbs.
     ```php
-    Route::match(['get', 'post'], '/', function () {
+    Route::match(['get', 'post'], '/', functi`on () {
         return "Hello";
     });
     ```
@@ -1533,3 +1533,10 @@ Eloquent relationships are defined as methods on your Eloquent model classes.
     // window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content; //Uncomment it if needed
 
 
+##Other Issues
+1. When mex length 191 deb_fields
+    ```php
+    //go to app/Providers/AppServiceProvider.php
+    //place this in boot function
+    Schema::defaultStringLength(191);
+    ```
