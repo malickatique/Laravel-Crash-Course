@@ -1507,7 +1507,15 @@ Eloquent relationships are defined as methods on your Eloquent model classes.
 	DB_USERNAME=demoaspi_defuser
 	DB_PASSWORD=~CUkh$0Y9QLK
     ```
-
+6. How to clear complete cache in Laravel?
+    ```php
+    Please run below artisan commands step wise step.
+    php artisan config:clear
+    php artisan cache:clear
+    composer dump-autoload
+    php artisan view:clear
+    php artisan route:clear
+    ```
 6. Other ISSUE while deploying:
 
 1. Axios request Base URL:
