@@ -1056,6 +1056,8 @@
 7. Create new Middleware 'checkRole'
     ```php
     - php artisan make:middleware checkRole
+    // Register it at app/HTTP/Kernel.php/$routeMiddleware[]
+    - 'checkRole' => \App\Http\Middleware\checkRole::class,
     ```
 
     * 'checkRole' Middleware file changess:
